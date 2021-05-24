@@ -2,6 +2,20 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const config = require("./app/config/db.config");
+
+mongoose.connect(`mongodb://${config.HOST}:${config.PORT}/${config.DB}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+}).then(()=>{
+    console.log("Successfully COnnected to DB");
+}).catch((err)=>{
+    console.log(err);
+    process.exit();
+});
 
 app.use(bodyParser.json());
 app.listen(port,()=>{
@@ -12,24 +26,5 @@ app.get("/",(req,res)=>{
     res.send("Welcome to Node Js");   
 })
 
-app.post("/postMethod",(req,res)=>{
-    res.send("Post Method is Working");
-})
 
-app.put("/putMethod",(req,res)=>{
-    res.send("Put Method is Working");
-})
-
-app.delete("/deleteMethod",(req,res)=>{
-    res.send("Delete Method is Working"); 
-})
-
-app.post("/dataBody",(req,res)=>{
-    res.send(req.body);
-})
-app.post("/dataParams/:name/:age",(req,res)=>{
-    res.send(req.params);
-})
-app.post("/dataQuery",(req,res)=>{
-    res.send(req.query);
-})
+require("./app/routes/test.route")(app);
